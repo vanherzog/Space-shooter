@@ -32,9 +32,11 @@ public class Enemy : MonoBehaviour
     public TextMeshProUGUI damageTextPrefab;
     public new ParticleSystem particleSystem;
     private Transform canvasTransform;
-    private float destroyDelay = 1f;
+    private float destroyDelay = 0.5f;
     public float moveSpeed2 = 1f;
     public float fadeSpeed2 = 1f;
+    private List<TextMeshProUGUI> damageTextInstances = new List<TextMeshProUGUI>();
+
 
 
     private bool dead;
@@ -95,30 +97,29 @@ public class Enemy : MonoBehaviour
             canvasTransform = canvasObject.transform;
             Vector3 gameObjPosition = transform.position;
 
-            // Convert the game object's position to viewport coordinates
-            Vector3 viewportPos = Camera.main.WorldToViewportPoint(gameObjPosition);
+            // Add an offset to the game object's position
+            Vector3 textPosition = new Vector3(gameObjPosition.x * 48.2f, 147f, 0);
 
-            // Convert the viewport coordinates to the local position of the canvas
-            Vector2 canvasPos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform as RectTransform, new Vector2(viewportPos.x * Screen.width, viewportPos.y * Screen.height), null, out canvasPos);
-
-            // Instantiate the text object at the canvas position
-            TextMeshProUGUI dT = Instantiate(damageTextPrefab, canvasPos, Quaternion.identity);
+            // Instantiate the text object at the new position
+            TextMeshProUGUI dT = Instantiate(damageTextPrefab, textPosition, Quaternion.identity);
             dT.transform.SetParent(canvasTransform, false);
+            damageTextInstances.Add(dT);
 
-            StartCoroutine(MoveAndFade(dT));
+
+            StartCoroutine(MoveAndFade(dT, textPosition));
         }
     }
 
-    public IEnumerator MoveAndFade(TextMeshProUGUI dT)
+    public IEnumerator MoveAndFade(TextMeshProUGUI dT, Vector3 textPosition)
     {
         RectTransform dTTransform = dT.GetComponent<RectTransform>();
         float timer = 0f;
+
+        dTTransform.position = new Vector3(transform.position.x + 1f, transform.position.y + 1f, 0f);
         while (timer < destroyDelay)
         {
-            Vector3 newPos = dTTransform.position + Vector3.up * moveSpeed2 * Time.deltaTime * 50f;
+            Vector3 newPos = dTTransform.position + Vector3.up * moveSpeed2 * Time.deltaTime;
             dTTransform.position = newPos;
-            Debug.Log(newPos);
             timer += Time.deltaTime;
             yield return null;
         }
@@ -133,9 +134,27 @@ public class Enemy : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         Destroy(dT.gameObject);
     }
+
+    private void OnDestroy()
+    {
+        DestroyAllDamageTextInstances();
+    }
+
+
+    private void DestroyAllDamageTextInstances()
+    {
+        foreach (TextMeshProUGUI dT in damageTextInstances)
+        {
+            if (dT != null)
+            {
+                Destroy(dT.gameObject);
+            }
+        }
+    }
+
 
 
     public void UpdateHP(float dif)
@@ -156,6 +175,7 @@ public class Enemy : MonoBehaviour
         audioSource.clip = boostSound;
         audioSource.Play();
         yield return new WaitForSeconds(1f);
+        DestroyAllDamageTextInstances();
 
         gameObject.SetActive(false);
         spaceship.Wave(true);

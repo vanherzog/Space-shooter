@@ -22,6 +22,8 @@ public class SpaceShip : MonoBehaviour
     public GameObject laserPrefab;
     public AudioClip laserSound;
     private bool isFiring = false;
+    private float fireDelay = 0.7f;
+    private float lastFireTime = 0f;
     public Image fuelBarImage;
     public Image fuelBarImage2;
 
@@ -41,10 +43,16 @@ public class SpaceShip : MonoBehaviour
     public GameObject enemy3;
     public GameObject enemy4;
     public GameObject enemy5;
+    public Enemy enemy_1;
+    public Enemy enemy_2;
+    public Enemy enemy_3;
+    public Enemy enemy_4;
+    public Enemy enemy_5;
     public GameObject menu;
     public float level;
     public float maxLevel;
     private float waveLevel;
+    private float counter = 0f;
 
     private void Awake()
     {
@@ -54,10 +62,16 @@ public class SpaceShip : MonoBehaviour
         waveLevel = 1f;
         maxLevel = PlayerPrefs.GetFloat("MaxLevel");
         Wave(false);
+        enemy_1 = enemy1.GetComponent<Enemy>();
+        enemy_2 = enemy2.GetComponent<Enemy>();
+        enemy_3 = enemy3.GetComponent<Enemy>();
+        enemy_4 = enemy4.GetComponent<Enemy>();
+        enemy_5 = enemy5.GetComponent<Enemy>();
     }
 
     private void OnEnable()
     {
+        counter += 1f;
         Wave(false);
         move = playerControls.Player.Move;
         move.Enable();
@@ -73,6 +87,11 @@ public class SpaceShip : MonoBehaviour
         fireExtra = playerControls.Player.FireExtra;
         fireExtra.Enable();
         fireExtra.performed += FireExtra;
+        if(counter > 1)
+        {
+            changeStats(false);
+        }
+        
 
     }
 
@@ -161,6 +180,48 @@ public class SpaceShip : MonoBehaviour
         StartCoroutine(Wavee(next));
     }
 
+    private void changeStats(bool up)
+    {
+        if (up)
+        {
+            enemy_1.hpmax *= 1.5f;
+            enemy_1.wait *= 0.75f;
+            enemy_1.movementSpeed *= 2f;
+            enemy_2.hpmax *= 1.5f;
+            enemy_2.wait *= 0.75f;
+            enemy_2.movementSpeed *= 2f;
+            enemy_3.hpmax *= 1.5f;
+            enemy_3.wait *= 0.75f;
+            enemy_3.movementSpeed *= 2f;
+            enemy_4.hpmax *= 1.5f;
+            enemy_4.wait *= 0.75f;
+            enemy_4.movementSpeed *= 2f;
+            enemy_5.hpmax *= 1.5f;
+            enemy_5.wait *= 0.75f;
+            enemy_5.movementSpeed *= 2f;
+        }
+        /**
+        else
+        {
+            enemy_1.hpmax *= 0.75f;
+            enemy_1.wait *= 1.33f;
+            enemy_1.movementSpeed *= 0.5f;
+            enemy_2.hpmax *= 0.75f;
+            enemy_2.wait *= 1.33f;
+            enemy_2.movementSpeed *= 0.5f;
+            enemy_3.hpmax *= 0.75f;
+            enemy_3.wait *= 1.33f;
+            enemy_3.movementSpeed *= 0.5f;
+            enemy_4.hpmax *= 0.75f;
+            enemy_4.wait *= 1.33f;
+            enemy_4.movementSpeed *= 0.5f;
+            enemy_5.hpmax *= 0.75f;
+            enemy_5.wait *= 1.33f;
+            enemy_5.movementSpeed *= 0.5f;
+        }
+        **/
+    }
+
     public IEnumerator Wavee(bool next)
     {
         
@@ -179,6 +240,7 @@ public class SpaceShip : MonoBehaviour
             {
                 wave = 0f;
                 hp += 2f;
+                changeStats(true);
             }
 
             waveLevel += 1f;
@@ -288,22 +350,21 @@ public class SpaceShip : MonoBehaviour
     {
         while (isFiring)
         {
-            Vector2 vector2 = new Vector2(transform.position.x, transform.position.y + 1f);
-            GameObject laser = Instantiate(laserPrefab, vector2, Quaternion.identity);
-            Rigidbody2D laserRB = laser.GetComponent<Rigidbody2D>();
-            laserRB.velocity = new Vector2(0f, moveSpeed);
-
-            // Play laser sound effect
-            audioSource.clip = laserSound;
-            audioSource.Play();
-            yield return new WaitForSeconds(0.2f);
-            /**
-            if (!IsGameObjectInView(laser))
+            if (Time.time - lastFireTime >= fireDelay)
             {
-                Debug.Log("JAP");
-                Destroy(laser);
+                Vector2 vector2 = new Vector2(transform.position.x, transform.position.y + 1f);
+                GameObject laser = Instantiate(laserPrefab, vector2, Quaternion.identity);
+                Rigidbody2D laserRB = laser.GetComponent<Rigidbody2D>();
+                laserRB.velocity = new Vector2(0f, moveSpeed);
+
+                // Play laser sound effect
+                audioSource.clip = laserSound;
+                audioSource.Play();
+
+                lastFireTime = Time.time;
             }
-            **/
+
+            yield return null;
         }
     }
 

@@ -13,7 +13,7 @@
 *.suo
 *.sln.DotSettings.user
 *.sln.DotSettings
-*.shaderlab
+*.shader
 
 # macOS specific
 .DS_Store
