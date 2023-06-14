@@ -1,0 +1,19 @@
+# Unity specific
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Visual Studio / Visual Studio Code specific
+*.sln
+*.csproj
+*.suo
+*.sln.DotSettings.user
+*.sln.DotSettings
+*.shaderlab
+
+# macOS specific
+.DS_Store

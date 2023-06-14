@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 1358eac66a2be8c47addd901b2062ca9
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Kenney Thick
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 6c9db0cb70ceab248be77679294e6514, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
