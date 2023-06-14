@@ -1,6 +1,6 @@
 # Space-shooter
 
-![image](https://github.com/vanherzog/Space-shooter/assets/50580065/c1c686bd-38ca-4410-93d7-f60521c8d6df)
+![image](https://github.com/vanherzog/Space-shooter/assets/50580065/0548bf22-b011-4093-b2ba-1a204ae7359a)
 
 A Space Shooter game that is made within 2-3 days with Unity. Due to a really tense schedule, 
 I am not able to improve the game visually and logically. 
